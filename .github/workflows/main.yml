@@ -2,8 +2,11 @@ name: Package Application with Pyinstaller
 
 on:
   push:
-    paths:
-      - '*.py'
+    branches: 
+      - main
+    paths-ignore:
+      - 'README.md'
+      - '.github/**'
 
   workflow_dispatch:
 
