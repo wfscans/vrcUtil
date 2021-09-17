@@ -1,4 +1,4 @@
-# vrcutil
+# vrcUtil
 
 Written for python3.6 will prob work with future versions. Won't work with past version due to f-strings if I recall.
 
