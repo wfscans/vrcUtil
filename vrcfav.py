@@ -59,7 +59,7 @@ def login():
         pickle.dump(_s.cookies, f)
 
 def fav(url):
-    r = rq("POST", "https://api.vrchat.cloud/api/1/favorites", {"type":"world", "favoriteId": getId(url.strip()), "tags": [args.w]})
+    r = rq("POST", "https://api.vrchat.cloud/api/1/favorites", {"type":"world", "favoriteId": url, "tags": [args.w]})
     if r[0]:
         print(f"INFO {getId(url.strip())} has beened added to {args.w}")
     elif r[1].status_code == 400:
