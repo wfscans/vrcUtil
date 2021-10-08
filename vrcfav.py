@@ -1,4 +1,4 @@
-#python3
+#!/usr/bin/python3
 import vutil
 import traceback
 import argparse
