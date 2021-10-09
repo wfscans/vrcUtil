@@ -1,4 +1,4 @@
-#python3
+#!/usr/bin/python3
 import vutil
 import requests
 import time
@@ -51,7 +51,7 @@ csrf = requests.get("https://rentry.co").cookies['csrftoken']
 r = getShareLink(False)
 if r[0] != "" and not r[0].startswith("e"):
     text += r[0]
-url, ecode = rentryNew(text)
+url, ecode = rentryNew(text + " (current world)")
 print(f"url: {url} edit code: {ecode}")
 print(r[0])
 
@@ -60,5 +60,5 @@ while True:
     if r[0] != "" and not r[0].startswith("e"):
         text += "\n" + r[0]
         print(r[0])
-        rentryEdit(text, url, ecode)
+        rentryEdit(text + " (current world)", url, ecode)
     time.sleep(60) #multi-thread drifting
