@@ -45,7 +45,7 @@ def rentryEdit(text, url, ecode):
         raise Exception(f"request returned status code {r.status_code}")
 
 
-text = "Join me for some world hopping! Currently I'm here\n"
+text = "Join me for some world hopping!\n"
 csrf = requests.get("https://rentry.co").cookies['csrftoken']
 
 r = getShareLink(False)
