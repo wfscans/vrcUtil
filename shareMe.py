@@ -49,7 +49,8 @@ text = "Join me for some world hopping! Currently I'm here\n"
 csrf = requests.get("https://rentry.co").cookies['csrftoken']
 
 r = getShareLink(False)
-text += r[0]
+if r[0] != "" and not r[0].startswith("e"):
+    text += r[0]
 url, ecode = rentryNew(text)
 print(f"url: {url} edit code: {ecode}")
 print(r[0])
