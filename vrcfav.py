@@ -13,10 +13,10 @@ def getId(s):
      else:
          return s[a:b]
 
-def fav(url):
-    r = vutil.rq("POST", "/favorites", {"type":"world", "favoriteId": url, "tags": [args.w]})
+def fav(url, group, type="world"):
+    r = vutil.rq("POST", "/favorites", {"type":{type}, "favoriteId": url, "tags": [group]})
     if r[0]:
-        print(f"INFO {url} has been added to {args.w}")
+        print(f"INFO {url} has been added to {group}")
     elif r[1].status_code == 400:
         print(f"WARNING {url} - {r[1].json()['error']['message']}")
     else:
@@ -71,12 +71,11 @@ if __name__ == "__main__":
                 if args.d:
                     unfav(getId(line.strip))
                 else:
-                    fav(getId(line.strip()))
-                vutil.sleep.count()
+                    fav(getId(line.strip()), args.w)
     else:
         if args.d:
             unfav(getId(args.url))
         else:
-            fav(getId(args.url))
+            fav(getId(args.url), args.w)
    except Exception:
     traceback.print_exc()
