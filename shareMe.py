@@ -4,6 +4,7 @@ import requests
 import time
 
 currentWorld=""
+instanceId =""
 
 def getShareLink(saveThumb=True):
     r = vutil.rq("GET", f"/users/{vutil._userId}")
@@ -11,8 +12,11 @@ def getShareLink(saveThumb=True):
     if r[0]:
         r = r[1].json()
         global currentWorld
-        if currentWorld != r['worldId']:
+        global instanceId
+        iid = r['instanceId'][:r['instanceId'].find("~")]
+        if currentWorld != r['worldId'] or instanceId != iid:
             currentWorld = r['worldId']
+            instanceId = iid
             r = vutil.rq("GET", f"/instances/{currentWorld}:{r['instanceId']}/shortName")
             if r[0]:
                 shareUrl = f"https://vrch.at/{r[1].content.decode()}"
@@ -29,7 +33,7 @@ def getShareLink(saveThumb=True):
                         return [shareUrl, ""]
         else:
             return ["", ""]
-    return ["e0", ""]
+    return ["error0 - no current world found(most likely)", ""]
 
 def rentryNew(text, url="", ecode=""):
     r = requests.post("https://rentry.co/api/new", {'csrfmiddlewaretoken': csrf, 'url':url, 'edit_code':ecode, 'text':text}, headers={"Referer": 'https://rentry.co'}, cookies={'csrftoken':csrf})
@@ -51,8 +55,12 @@ csrf = requests.get("https://rentry.co").cookies['csrftoken']
 r = getShareLink(False)
 if r[0] != "" and not r[0].startswith("e"):
     text += r[0]
-url, ecode = rentryNew(text + " (current world)")
-print(f"url: {url} edit code: {ecode}")
+if currentWorld == "" or currentWorld == "offline":
+    url, ecode = rentryNew(text)
+else:
+    url, ecode = rentryNew(text + " (current world)")
+print(f"INFO url: {url} edit code: {ecode}")
+print(f"INFO While edit code is provided anything added will be overwritten by the program on update!(atleast while the program is running)")
 print(r[0])
 
 while True:
