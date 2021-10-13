@@ -1,4 +1,4 @@
-#python3
+#!/usr/bin/python3
 import os
 import requests
 import base64
@@ -7,7 +7,7 @@ import time
 import getpass
 
 class limitCounter:
- def __init__(self, maxcount=10):
+ def __init__(self, maxcount=20):
   self.sleepCount = 0
   self.sleepCountMax = maxcount
  def count(self):
@@ -25,13 +25,14 @@ _userId = ""
 sleep = limitCounter()
 _v = "1.01"
 
-def rq(method, url, body=None, header={}, baseUrl="https://api.vrchat.cloud/api/1"):
+def rq(method, url, body=None, header={}, baseUrl="https://api.vrchat.cloud/api/1", nosleep=False):
+    if not nosleep: sleep.count()
     if method == "GET":
         r = _s.get(baseUrl + url, headers=header)
     elif method == "POST":
         r = _s.post(baseUrl + url, data=body)
     elif method == "PUT":
-        r = _s.put(baseUrl + url)
+        r = _s.put(baseUrl + url, data=body)
     elif method == "DELETE":
         r = _s.delete(baseUrl + url)
     else:
@@ -42,20 +43,27 @@ def rq(method, url, body=None, header={}, baseUrl="https://api.vrchat.cloud/api/
         return [True, r]
 
 def login():
-    print("Please login:")
-    r = rq("GET", "/auth/user", header={'Authorization':f'Basic {base64.b64encode((input("Username ") + ":" + getpass.getpass()).encode()).decode()}'})
+    print("Please login")
+    r = rq("GET", "/auth/user", header={'Authorization':f'Basic {base64.b64encode((input("Username: ") + ":" + getpass.getpass()).encode()).decode()}'}, nosleep=True)
     if not r[0]:
         raise Exception("failed to login")
     else:
         print(f"INFO logged-in as {r[1].json()['displayName']}")
+        global _userId
         _userId = r[1].json()['id']
     with open(_configPath, 'wb') as f:
         pickle.dump(_s.cookies, f)
 
+def logout():
+    rq("PUT", "/logout", nosleep=True)
+    os.remove(_configPath)
+    print(f"INFO logged out")
+
+
 if os.path.exists(_configPath):
  with open(_configPath, 'rb') as f:
   _s.cookies = pickle.load(f)
- r = rq("GET", "/auth/user")
+ r = rq("GET", "/auth/user", nosleep=True)
  if not r[0]:
   if r[1].status_code == 401:
    print("WARNING cached login expired")
