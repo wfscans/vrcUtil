@@ -18,10 +18,12 @@ jobs:
       
     - run: python -m pip install pyinstaller requests
 
-    - name: Package app  
+    - name: Package apps
       run: pyinstaller -F vrcfav.py
       
     - run: pyinstaller -F shareMe.py
+    
+    - run: pyinstaller -F backup.py
     
     - name: Upload release
       uses: Xotl/cool-github-releases@16c58a5863d6ba9944f63ca8bb78bb3249ce1d81
@@ -30,7 +32,7 @@ jobs:
         isPrerelease: false
         tag_name: continous
         release_name: "Automatic CI builds"
-        assets: dist/vrcfav.exe;dist/shareMe.exe
+        assets: dist/vrcfav.exe;dist/shareMe.exe;dist/backup.exe
         replace_assets: true
         body_mrkdwn: |
           _This is the newest build, but Github date can't be updated. Corresponding commit: ${{ github.sha }}_
