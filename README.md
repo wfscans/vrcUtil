@@ -12,6 +12,9 @@ A simple CLI script/program that allows you to add/remove worlds from your favor
 # SHAREME
 A script that will track your current world and post it to a rentry.co paste that updates as you go. I did it in a way where you could easily add in new ways(twitter is pretty easy). I had it working with 4chan but currently am not releasing that functional. Feel free to do so yourself.
 
+# SKIM
+A script that will take a rentry.co url and output a list of worldIds since vrchat's shortned links expire.
+
 # BACKUP
 A simple CLI app to backup/restore parts of a VRChat account. Currently supports: Basic User Account Infomation, Friends list, World Favorites, Uploaded World infomation, Avatar Favorites, Uploaded Avatar infomation, Custom lists(Avatar/Friends/Worlds). **Due to the design of VRChat private uploaded avatars/worlds can't be added to your favorited by a different account. Same can be said to abouy your friends list. A text file will have to do.**
 
