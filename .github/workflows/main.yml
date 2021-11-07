@@ -25,6 +25,8 @@ jobs:
     
     - run: pyinstaller -F backup.py
     
+    - run: pyinstaller -F skim.py
+    
     - name: Upload release
       uses: Xotl/cool-github-releases@16c58a5863d6ba9944f63ca8bb78bb3249ce1d81
       with:
