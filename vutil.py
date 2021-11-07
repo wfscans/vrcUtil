@@ -26,6 +26,7 @@ class Session:
             l = list(args)
             l[0] = baseUrl + l[0]
             return tuple(l)
+        return args
      def get(self, *args, **kwargs):
       self.count()
       args = self.mod(args)
