@@ -8,42 +8,37 @@ def getFavgroup(groupType):
     #groupType:world,friend,avatar
     f = []
     offset = 0
-    r = vutil.rq("GET", f"/favorites?type={groupType}&n=100&offset=0")
-    while r[1].content != b"[]":
-        f.extend(r[1].json())
+    r = vutil.s.get(f"/favorites?type={groupType}&n=100&offset=0")
+    while r.content != b"[]":
+        f.extend(r.json())
         offset+=100
-        vutil.sleep.count()
-        r = vutil.rq("GET", f"/favorites?type={groupType}&n=100&offset={offset}")
+        r = vutil.s.get(f"/favorites?type={groupType}&n=100&offset={offset}")
     return f
 
 def search(sType):
     f = []
     offset = 0
-    r = vutil.rq("GET", f"/{sType}?releaseStatus=all&organization=vrchat&sort=updated&order=descending&user=me&n=100&offset=0")
-    while r[1].content != b"[]":
-        f.extend(r[1].json())
+    r = vutil.s.get(f"/{sType}?releaseStatus=all&organization=vrchat&sort=updated&order=descending&user=me&n=100&offset=0")
+    while r.content != b"[]":
+        f.extend(r.json())
         offset+=100
-        vutil.sleep.count()
-        r = vutil.rq("GET", f"/{sType}?releaseStatus=all&organization=vrchat&sort=updated&order=descending&user=me&n=100&offset={offset}")
+        r = vutil.s.get(f"/{sType}?releaseStatus=all&organization=vrchat&sort=updated&order=descending&user=me&n=100&offset={offset}")
     return f
 
 def friends():
     f = []
     offset = 0
-    r = vutil.rq("GET", "/auth/user/friends?n=100&offset=0&offline=flase")
-    while r[1].content != b"[]":
-        f.extend(r[1].json())
+    r = vutil.s.get("/auth/user/friends?n=100&offset=0&offline=flase")
+    while r.content != b"[]":
+        f.extend(r.json())
         offset+=100
-        vutil.sleep.count()
-        r = vutil.rq("GET", f"/auth/user/friends?n=100&offset={offset}&offline=flase")
+        r = vutil.s.get(f"/auth/user/friends?n=100&offset={offset}&offline=flase")
     offset = 0
-    vutil.sleep.count()
-    r = vutil.rq("GET", "/auth/user/friends?n=100&offset=0&offline=true")
-    while r[1].content != b"[]":
-        f.extend(r[1].json())
+    r = vutil.s.get("/auth/user/friends?n=100&offset=0&offline=true")
+    while r.content != b"[]":
+        f.extend(r.json())
         offset+=100
-        vutil.sleep.count()
-        r = vutil.rq("GET", f"/auth/user/friends?n=100&offset={offset}&offline=true")
+        r = vutil.s.get(f"/auth/user/friends?n=100&offset={offset}&offline=true")
     return f
 
 def find(lst, key, value):
@@ -53,9 +48,9 @@ def find(lst, key, value):
     return -1
 
 def backup():
-    u = vutil.rq("GET", "/auth/user")[1].json()
-    uu = vutil.rq("GET", "/auth/user")[1].json()['username']
-    groupNames = vutil.rq("GET", "/favorite/groups?n=100")[1].json()
+    u = vutil.s.get("/auth/user").json()
+    uu = vutil.s.get("/auth/user").json()['username']
+    groupNames = vutil.s.get("/favorite/groups?n=100").json()
 
     os.makedirs(f"{uu}_backup",exist_ok=True)
     print(f"INFO Creating {uu}_backup in current directory")
@@ -110,10 +105,10 @@ def restore():
         fo = json.loads(f.read())
         print("INFO setting group names")
         for group in fo:
-            r = vutil.rq("PUT", f"/favorite/group/{group['type']}/{group['name']}/{vutil._userId}", body={'displayName': group['displayName'], 'visibility': group['visibility']})
-            if r[0]:
+            r = vutil.s.put(f"/favorite/group/{group['type']}/{group['name']}/{vutil.s.userId}", data={'displayName': group['displayName'], 'visibility': group['visibility']})
+            if r.status_code == 200:
                 print(f"INFO {group['name']} changed to name {group['displayName']} with visibility {group['visibility']}")
-            elif r[1].status_code == 400:
+            elif r.status_code == 400:
                 print(f"WARNING {url} - {r[1].json()['error']['message']}")
             else:
                 print(f"ERROR {group['name']} failed to update status code {r[1].status_code}")

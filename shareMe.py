@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#python3
 import vutil
 import requests
 import time
@@ -7,28 +7,27 @@ currentWorld=""
 instanceId =""
 
 def getShareLink(saveThumb=True):
-    r = vutil.rq("GET", f"/users/{vutil._userId}")
-    #r = vutil.rq("GET", f"/users/{id}")
-    if r[0]:
-        r = r[1].json()
+    r = vutil.s.get(f"/users/{vutil.s.userId}")
+    if r.status_code == 200:
+        r = r.json()
         global currentWorld
         global instanceId
         iid = r['instanceId'][:r['instanceId'].find("~")]
         if currentWorld != r['worldId'] or instanceId != iid:
             currentWorld = r['worldId']
             instanceId = iid
-            r = vutil.rq("GET", f"/instances/{currentWorld}:{r['instanceId']}/shortName")
-            if r[0]:
-                shareUrl = f"https://vrch.at/{r[1].content.decode()}"
-                r = vutil.rq("GET", f"/worlds/{currentWorld}")
-                if r[0]:
+            r = vutil.s.get(f"/instances/{currentWorld}:{r['instanceId']}/shortName")
+            if r.status_code == 200:
+                shareUrl = f"https://vrch.at/{r.content.decode()}"
+                r = vutil.s.get(f"/worlds/{currentWorld}")
+                if r.status_code == 200:
                     if saveThumb == False:
                         return [shareUrl,""]
-                    r = vutil.rq("GET", r[1].json()['imageUrl'], baseUrl="")
-                    if r[0]:
-                        with open(f"temp.{r[1].headers['Content-Type'].split('/')[1]}", 'wb') as f:
-                            f.write(r[1].content)
-                        return [shareUrl, f.name]
+                    r = vutil.s.get(r.json()['imageUrl'])
+                    if r.status_code == 200:
+                        with open(f"temp.{r.headers['Content-Type'].split('/')[1]}", 'wb') as f:
+                            f.write(r.content)
+                            return [shareUrl, f.name]
                     else:
                         return [shareUrl, ""]
         else:

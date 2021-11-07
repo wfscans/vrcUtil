@@ -1,9 +1,9 @@
-#!/usr/bin/python3
+#python3
 import vutil
 import traceback
 import argparse
 
-_v = "1.01"
+_v = "1.5"
 
 def getId(s):
      a = s.find("wrld_")
@@ -14,28 +14,28 @@ def getId(s):
          return s[a:b]
 
 def fav(url, group, type="world"):
-    r = vutil.rq("POST", "/favorites", {"type":{type}, "favoriteId": url, "tags": [group]})
-    if r[0]:
+    r = vutil.s.post("/favorites", data={"type":{type}, "favoriteId": url, "tags": [group]})
+    if r.status_code == 200:
         print(f"INFO {url} has been added to {group}")
-    elif r[1].status_code == 400:
-        print(f"WARNING {url} - {r[1].json()['error']['message']}")
+    elif r.status_code == 400:
+        print(f"WARNING {url} - {r.json()['error']['message']}")
     else:
-        print(f"ERROR {url} returned status code {r[1].status_code}")
+        print(f"ERROR {url} returned status code {r.status_code}")
         try:
-            print(f"ERROR {r[1].json()['error']['message']}")
+            print(f"ERROR {r.json()['error']['message']}")
         except Exception:
             pass
 
 def unfav(url):
-    r = vutil.rq("DELETE", f"/favorites/{url}")
-    if r[0]:
+    r = vutil.s.delete(f"/favorites/{url}")
+    if r.status_code == 200:
         print(f"INFO {url} has been removed")
-    elif r[1].status_code == 400:
-        print(f"WARNING {url} - {r[1].json()['error']['message']}")
+    elif r.status_code == 400:
+        print(f"WARNING {url} - {r.json()['error']['message']}")
     else:
-        print(f"ERROR {url} returned status code {r[1].status_code}")
+        print(f"ERROR {url} returned status code {r.status_code}")
         try:
-            print(f"ERROR {r[1].json()['error']['message']}")
+            print(f"ERROR {r.json()['error']['message']}")
         except Exception:
             pass
 
@@ -69,7 +69,7 @@ if __name__ == "__main__":
         with open(args.url, 'r') as f:
             for line in f:
                 if args.d:
-                    unfav(getId(line.strip))
+                    unfav(getId(line.strip()))
                 else:
                     fav(getId(line.strip()), args.w)
     else:
