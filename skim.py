@@ -1,6 +1,6 @@
 import sys
 if len(sys.argv) != 2:
-    print("usage: skim rentry.co/sample or skim https://rentry.com/sample")
+    print("usage: skim rentry.co/sample or skim https://rentry.co/sample")
     exit()
 
 def getId(s):
