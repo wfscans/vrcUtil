@@ -6,6 +6,8 @@ import argparse
 _v = "1.5"
 
 def getId(s):
+     if "vrch.at" in s:
+        s = vutil.s.get(s).url
      a = s.find("wrld_")
      b = s.find("&", a)
      if (b==-1):
@@ -51,6 +53,8 @@ if __name__ == "__main__":
    (not needed for when in a file but needed to escape commandline special symbols)
 
    File input is one url a line:
+   https://vrch.at/dead-beef-8eaff
+   https://vrchat.com/home/world/wrld_4432ea9b-729c-46e3-8eaf-846aa0a37fdd
    https://vrchat.com/home/world/wrld_4432ea9b-729c-46e3-8eaf-846aa0a37fdd
    https://vrchat.com/home/launch?worldId=wrld_4432ea9b-729c-46e3-8eaf-846aa0a37fdd
    https://vrchat.com/home/launch?worldId=wrld_4432ea9b-729c-46e3-8eaf-846aa0a37fdd&instanceId=54932
